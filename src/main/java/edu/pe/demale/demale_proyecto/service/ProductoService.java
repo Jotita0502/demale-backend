@@ -90,7 +90,16 @@ public class ProductoService {
         }
         return false;
     }
+    @Transactional(readOnly = true)
+        public List<ProductoResponse> obtenerProductosEnAlmacen() {
+            List<Productos> productos = productosRepository.findAll();
 
+            return productos.stream()
+                    .filter(p -> p.getEstadoEnvio() != null
+                            && "En Almacén".equalsIgnoreCase(p.getEstadoEnvio().getEstado()))
+                    .map(this::mapProductoToProductoResponse)
+                    .collect(Collectors.toList());
+        }
     @Transactional
     public ProductoResponse registrarProducto(ProductoRegistroRequest request, MultipartFile guiaRemisionFile)
             throws IOException {
@@ -158,7 +167,14 @@ public class ProductoService {
                         "Producto no encontrado para descargar guía de remisión con ID: " + idProducto));
         return producto.getGuiaRemision();
     }
+    @Transactional(readOnly = true)
+public List<ProductoResponse> obtenerHistorialProductos() {
+    List<Productos> productos = productosRepository.findAll();
 
+    return productos.stream()
+            .map(this::mapProductoToProductoResponse)
+            .collect(Collectors.toList());
+}
     private ProductoResponse mapProductoToProductoResponse(Productos producto) {
         ProductoResponse response = new ProductoResponse();
         response.setIdProducto(producto.getIdProducto());

@@ -51,14 +51,13 @@ public class ClienteController {
             ClienteResponse response = clienteService.registrarCliente(request);
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            ClienteResponse errorResponse = new ClienteResponse();
+    e.printStackTrace();
+    System.err.println("ERROR AL REGISTRAR CLIENTE: " + e.getMessage());
 
-            errorResponse.setNombres(null); // Limpiamos campos para indicar error
-            errorResponse.setApellidos(null);
-            errorResponse.setNumeroDocumento(null);
-
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-        }
+    return ResponseEntity
+            .badRequest()
+            .build();
+}
     }
 
     @GetMapping("/tipos-documento")
